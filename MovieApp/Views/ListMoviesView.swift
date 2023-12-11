@@ -12,20 +12,23 @@ struct ListMoviesView: View {
     
     var body: some View {
         NavigationStack {
-            VStack {
-                if let results = movies?.results {
-                    ForEach(results) { movie in
-                        NavigationLink(value: movie) {
-                            Text(movie.title)
+            ScrollView {
+                LazyVStack {
+                    if let results = movies?.results {
+                        ForEach(results) { movie in
+                            NavigationLink(value: movie) {
+                                MovieCellView(movie: movie)
+                            }
                         }
+                    } else {
+                        ProgressView()
                     }
-                } else {
-                    ProgressView()
                 }
             }
             .navigationDestination(for: MovieDto.self) { movie in
-                Text("Detalle de la pelicula \(movie.title)")
+                MovieDetailView(movie: movie)
             }
+            .navigationTitle("Peliculas destacadas")
         }
         .task {
             let result = await Network.shared.fetchMovies(url: URL.popularMovies)
