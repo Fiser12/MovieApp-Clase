@@ -7,17 +7,36 @@
 
 import SwiftUI
 
+final class ListMoviesState: ObservableObject {
+    @Published var movies: MoviesResult? = nil
+    @Published var searchText = ""
+
+    @MainActor
+    func loadData() async {
+        movies = await Network.shared.fetchMovies()
+    }
+    
+    func isShowingMoview(movie: MovieDto) -> Bool {
+        return searchText.isEmpty || movie.title.contains(searchText) || movie.originalTitle.contains(searchText)
+    }
+}
+
 struct ListMoviesView: View {
-    @State var movies: MoviesResult? = nil
+    @StateObject var state = ListMoviesState()
     
     var body: some View {
         NavigationStack {
+            SearchTextView(searchText: $state.searchText)
+                .padding(10)
             ScrollView {
-                LazyVStack {
-                    if let results = movies?.results {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 117))]) {
+                    if let results = state.movies?.results {
                         ForEach(results) { movie in
-                            NavigationLink(value: movie) {
-                                MovieCellView(movie: movie)
+                            if state.isShowingMoview(movie: movie) {
+                                NavigationLink(value: movie) {
+                                    MovieCellView(movie: movie)
+                                }
+                                .transition(.scale)
                             }
                         }
                     } else {
@@ -25,16 +44,16 @@ struct ListMoviesView: View {
                     }
                 }
             }
+            .animation(.easeInOut, value: state.searchText)
+            .contentMargins(12, for: .scrollContent)
+            .scrollBounceBehavior(.basedOnSize)
             .navigationDestination(for: MovieDto.self) { movie in
                 MovieDetailView(movie: movie)
             }
             .navigationTitle("Peliculas destacadas")
         }
         .task {
-            let result = await Network.shared.fetchMovies(url: URL.popularMovies)
-            if let result {
-                movies = result
-            }
+            await state.loadData()
         }
     }
 }

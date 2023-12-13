@@ -17,6 +17,7 @@
 		C24985432B27918500F57DBD /* MovieCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24985422B27918500F57DBD /* MovieCellView.swift */; };
 		C24985452B2791C800F57DBD /* PreviewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24985442B2791C800F57DBD /* PreviewData.swift */; };
 		C24985472B2792CD00F57DBD /* MovieDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24985462B2792CD00F57DBD /* MovieDetailView.swift */; };
+		C2FD94AE2B2A2BBC0015267A /* SearchTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FD94AD2B2A2BBC0015267A /* SearchTextView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 		C24985422B27918500F57DBD /* MovieCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieCellView.swift; sourceTree = "<group>"; };
 		C24985442B2791C800F57DBD /* PreviewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewData.swift; sourceTree = "<group>"; };
 		C24985462B2792CD00F57DBD /* MovieDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDetailView.swift; sourceTree = "<group>"; };
+		C2FD94AD2B2A2BBC0015267A /* SearchTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTextView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,6 +109,7 @@
 				C24985402B278C7B00F57DBD /* ListMoviesView.swift */,
 				C24985422B27918500F57DBD /* MovieCellView.swift */,
 				C24985462B2792CD00F57DBD /* MovieDetailView.swift */,
+				C2FD94AD2B2A2BBC0015267A /* SearchTextView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -188,6 +191,7 @@
 				C24985452B2791C800F57DBD /* PreviewData.swift in Sources */,
 				C24985392B278B8C00F57DBD /* Network.swift in Sources */,
 				C24985472B2792CD00F57DBD /* MovieDetailView.swift in Sources */,
+				C2FD94AE2B2A2BBC0015267A /* SearchTextView.swift in Sources */,
 				C249853B2B278BA400F57DBD /* APIResults.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
