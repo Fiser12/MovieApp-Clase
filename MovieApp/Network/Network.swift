@@ -16,14 +16,18 @@ private let headers = [
     "Authorization": "Bearer \(accessToken)"
 ]
 
-let movieAPI = URL(string: "https://api.themoviedb.org/3/")!
-let popularMovies = movieAPI.appending(path: "movie/popular")
-let imagesURL = URL(string: "https://image.tmdb.org")!
 
 extension URL {
+    static let movieAPI = URL(string: "https://api.themoviedb.org/3/")!
+    static let imagesURL = URL(string: "https://image.tmdb.org")!
+
     static let popularMovies = movieAPI.appending(path: "movie/popular")
     static func poster(posterPath: String) -> URL {
         return imagesURL.appending(path: "t/p/w500/\(posterPath)")
+    }
+    static func searchMovies(query: String) -> URL {
+        movieAPI.appending(path: "search/movie")
+            .appending(queryItems: [URLQueryItem(name: "query", value: query)])
     }
 }
 
@@ -69,8 +73,18 @@ final class Network {
         return nil
     }
 
-    func fetchMovies() async -> MoviesResult? {
+    func fetchPopularMovies() async -> MoviesResult? {
         let data: Data? = await fetchData(url: URL.popularMovies)
+        if let data {
+            return try? JSONDecoder().decode(MoviesResult.self, from: data)
+        }
+        print("⭕️ Error en la decodificación de las peliculas")
+        return nil
+    }
+    
+    func searchMovies(query: String) async -> MoviesResult? {
+        print(URL.searchMovies(query: query))
+        let data: Data? = await fetchData(url: URL.searchMovies(query: query))
         if let data {
             return try? JSONDecoder().decode(MoviesResult.self, from: data)
         }

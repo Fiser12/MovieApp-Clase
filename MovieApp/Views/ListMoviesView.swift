@@ -10,15 +10,31 @@ import SwiftUI
 final class ListMoviesState: ObservableObject {
     @Published var movies: MoviesResult? = nil
     @Published var searchText = ""
+    var task: Task<Void, Never>?
 
     @MainActor
     func loadData() async {
-        movies = await Network.shared.fetchMovies()
+        movies = await Network.shared.fetchPopularMovies()
     }
     
     func isShowingMoview(movie: MovieDto) -> Bool {
         return searchText.isEmpty || movie.title.contains(searchText) || movie.originalTitle.contains(searchText)
     }
+    
+    
+    func search(query: String) {
+        task = Task { @MainActor in
+            if searchText.isEmpty {
+                return
+            }
+            
+            let movies = await Network.shared.searchMovies(query: query)
+            if let movies {
+                self.movies = movies
+            }
+        }
+    }
+    
 }
 
 struct ListMoviesView: View {
@@ -32,12 +48,10 @@ struct ListMoviesView: View {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 117))]) {
                     if let results = state.movies?.results {
                         ForEach(results) { movie in
-                            if state.isShowingMoview(movie: movie) {
-                                NavigationLink(value: movie) {
-                                    MovieCellView(movie: movie)
-                                }
-                                .transition(.scale)
+                            NavigationLink(value: movie) {
+                                MovieCellView(movie: movie)
                             }
+                            .transition(.scale)
                         }
                     } else {
                         ProgressView()
@@ -54,6 +68,12 @@ struct ListMoviesView: View {
         }
         .task {
             await state.loadData()
+        }
+        .onReceive(state.$searchText
+            .removeDuplicates()
+            .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
+        ) { searchText in
+            state.search(query: searchText)
         }
     }
 }
